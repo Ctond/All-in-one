@@ -6,7 +6,8 @@ RUN apt update && apt upgrade -y \
     python3-yaml \
     python3-jinja2 \
     pythin3-paramiko \
-    ansible 
+    ansible ansible-lint
 
 RUN apt clear \
     apt autoremove
+CMD ["/bin/sh"]
