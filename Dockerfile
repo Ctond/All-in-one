@@ -10,4 +10,4 @@ RUN apt update && apt upgrade -y \
 
 RUN apt clear \
     apt autoremove
-CMD ["/bin/sh"]
+CMD ["ansible-playbook" "ansible-inventory"]
