@@ -1,0 +1,20 @@
+---
+
+- name: change datetime
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: change datetime
+    timezone:
+      name: Asia/Omsk
+  
+- name: ssh users and hist keys
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: adding users
+    user:
+      name: user
+      password: "123"
