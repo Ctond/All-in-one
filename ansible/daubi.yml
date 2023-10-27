@@ -18,3 +18,8 @@
     user:
       name: user
       password: "123"
+
+  - name: kluch
+    authorized_key:
+      user: test
+      key: "{{ lookup('file'), /home/test/.ssh/id_rsa.pub }}"
