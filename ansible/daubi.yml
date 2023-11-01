@@ -16,11 +16,17 @@
   tasks:
   - name: adding users
     user:
-      name: user
+      name: {{ item }}
       password: "123"
+    with_items:
+    - user
+    - user1
 
   - name: kluch
     authorized_key:
-      user: test
+      user: {{ item }}
       state: present
       key: "{{ lookup('124.pub', '/home/test/.ssh/id_rsa.pub') }}"
+    with_items:
+    - user
+    - user1
