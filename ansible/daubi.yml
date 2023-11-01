@@ -26,7 +26,7 @@
     authorized_key:
       user: {{ item }}
       state: present
-      key: "{{ lookup('124.pub', '/home/test/.ssh/id_rsa.pub') }}"
+      key: "{{ lookup('124.pub', '/home/{{ item }}/.ssh/id_rsa.pub') }}"
     with_items:
     - user
     - user1
