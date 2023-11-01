@@ -23,4 +23,4 @@
     authorized_key:
       user: test
       state: present
-      key: "{{ lookup('file', '/home/test/.ssh/id_rsa.pub') }}"
+      key: "{{ lookup('124.pub', '/home/test/.ssh/id_rsa.pub') }}"
