@@ -1,44 +1,43 @@
 ---
-tasks:
+- name: change datetime
+  hosts: all
+  become: yes
+
+  tasks:
   - name: change datetime
-    hosts: all
-    become: yes
+    timezone:
+      name: Asia/Omsk
+  
+- name: ssh users and host keys
+  hosts: all
+  become: yes
 
-    tasks:
-    - name: change datetime
-      timezone:
-        name: Asia/Omsk
-    
-  - name: ssh users and host keys
-    hosts: all
-    become: yes
+- name: adding users
+  user:
+    name: "{{ item }}"
+    password: "$6$7ljZE76IUPFTu0hc$QBdpiTN7HX82FidosfEmpb22Pi4WEMH2S95WR59UNu8ZhI8yWTnSnGWjY85JmhEqbLtbwAXV4nlA91BKZf1Lh/"
+  with_items:
+  - user
+  - user1
 
-  - name: adding users
-    user:
-      name: "{{ item }}"
-      password: "$6$7ljZE76IUPFTu0hc$QBdpiTN7HX82FidosfEmpb22Pi4WEMH2S95WR59UNu8ZhI8yWTnSnGWjY85JmhEqbLtbwAXV4nlA91BKZf1Lh/"
-    with_items:
-    - user
-    - user1
+- name: key
+  user:
+    name: "{{ item }}"
+    generate_ssh_key: yes
+    ssh_key_bits: 1024
+    ssh_key_file: .ssh/id_rsa
+  with_items:
+  - user
+  - user1
 
-  - name: key
-    user:
-      name: "{{ item }}"
-      generate_ssh_key: yes
-      ssh_key_bits: 1024
-      ssh_key_file: .ssh/id_rsa
-    with_items:
-    - user
-    - user1
-
-  - name: install docker and docker-compose
-    apt:
-      update_cache: yes
-      upgrade: dist
-      pkg: 
-        - docker
-        - docker-compose
-      state: present
+- name: install docker and docker-compose
+  apt:
+    update_cache: yes
+    upgrade: dist
+    pkg: 
+      - docker
+      - docker-compose
+    state: present
 
 
   # - name: kluch
