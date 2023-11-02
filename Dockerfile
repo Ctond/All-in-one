@@ -7,6 +7,6 @@ RUN apt install -y \
     ansible ansible-lint \
     openssh-server openssh-client
 RUN apt clean && apt autoremove
+RUN RUN ssh-keygen -q -t rsa -N '' -f /id_rsa
 
-ENTRYPOINT ["ssh-keygen", "ssh-copy-id"]
 CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
