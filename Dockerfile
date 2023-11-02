@@ -8,5 +8,5 @@ RUN apt install -y \
     openssh-server openssh-client
 RUN apt clean && apt autoremove
 
-COPY /root/.ssh/known_hosts /root/.ssh/known_hosts
+ENTRYPOINT ["ssh-keygen", "ssh-copy-id"]
 CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
