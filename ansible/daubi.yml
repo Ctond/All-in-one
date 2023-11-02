@@ -32,7 +32,7 @@
     - user
     - user1
 
-- name: install docker and docker-compose
+  - name: install docker and docker-compose
   apt:
     update_cache: yes
     upgrade: dist
