@@ -26,14 +26,14 @@
     - user
     - user1
 
-  - name: install docker and docker-compose
-    apt:
-      update_cache: yes
-      upgrade: dist
-      pkg: 
-        - docker
-        - docker-compose
-      state: present
+- name: install docker and docker-compose
+  apt:
+    update_cache: yes
+    upgrade: dist
+    pkg: 
+      - docker
+      - docker-compose
+    state: present
 
 
   # - name: kluch
