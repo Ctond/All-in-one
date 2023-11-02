@@ -6,7 +6,7 @@ RUN apt install -y \
     python3-yaml python3-jinja2 python3-paramiko \
     ansible ansible-lint \
     openssh-server openssh-client
-
 RUN apt clean && apt autoremove
 
+COPY /root/.ssh/known_hosts /root/.ssh/known_hosts
 CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
