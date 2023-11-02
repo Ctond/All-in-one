@@ -1,19 +1,18 @@
 ---
-
-- name: change datetime
-  hosts: all
-  become: yes
-
-  tasks:
+tasks:
   - name: change datetime
-    timezone:
-      name: Asia/Omsk
-  
-- name: ssh users and host keys
-  hosts: all
-  become: yes
+    hosts: all
+    become: yes
 
-  tasks:
+    tasks:
+    - name: change datetime
+      timezone:
+        name: Asia/Omsk
+    
+  - name: ssh users and host keys
+    hosts: all
+    become: yes
+
   - name: adding users
     user:
       name: "{{ item }}"
@@ -33,13 +32,13 @@
     - user1
 
   - name: install docker and docker-compose
-  apt:
-    update_cache: yes
-    upgrade: dist
-    pkg: 
-      - docker
-      - docker-compose
-    state: present
+    apt:
+      update_cache: yes
+      upgrade: dist
+      pkg: 
+        - docker
+        - docker-compose
+      state: present
 
 
   # - name: kluch
