@@ -6,6 +6,6 @@ RUN apt install -y \
     python3-yaml python3-jinja2 python3-paramiko \
     ansible ansible-lint
 
-RUN apt clear && apt autoremove
+RUN apt clean && apt autoremove
 
 CMD ["ansible-playbook", "/ansible/daubi.yml"]
