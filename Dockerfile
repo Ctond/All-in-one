@@ -8,4 +8,4 @@ RUN apt install -y \
 
 RUN apt clean && apt autoremove
 
-CMD ["ansible-playbook", "/etc/ansible/daubi.yml", ["/bin/sh"]]
+CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
