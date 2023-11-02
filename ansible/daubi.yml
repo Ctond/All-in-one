@@ -9,7 +9,7 @@
     timezone:
       name: Asia/Omsk
   
-- name: ssh users and hist keys
+- name: ssh users and host keys
   hosts: all
   become: yes
 
@@ -22,11 +22,31 @@
     - user
     - user1
 
-  - name: kluch
-    authorized_key:
-      user: {{ item }}
-      state: present
-      key: "{{ lookup('124.pub', '/home/{{ item }}/.ssh/id_rsa.pub') }}"
+  - name: key
+    user:
+      name: {{ item }}
+      generate_ssh_key: yes
+      ssh_key_bits: 1024
+      ssh_key_file: .ssh/id_rsa
     with_items:
     - user
     - user1
+
+- name: install docker and docker-compose
+  apt:
+    update_cache: yes
+    upgrade: dist
+    pkg: 
+      - docker
+      - docker-compose
+    state: present
+
+
+  # - name: kluch
+  #   authorized_key:
+  #     user: {{ item }}
+  #     state: present
+  #     key: "{{ lookup('124.pub', '/home/{{ item }}/.ssh/id_rsa.pub') }}"
+  #   with_items:
+  #   - user
+  #   - user1

@@ -8,4 +8,4 @@ RUN apt update && apt upgrade -y \
 RUN apt clear \
     apt autoremove
 
-CMD ["ansible-playbook" "ansible-inventory"]
+CMD ["ansible-playbook", "daubi.yml"]
