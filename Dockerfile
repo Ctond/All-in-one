@@ -8,6 +8,6 @@ RUN apt install -y \
     openssh-server openssh-client
 RUN apt clean && apt autoremove
 
-COPY /tmp/ssh /root/.ssh/id_rsa
+COPY /id_rsa /root/.ssh/id_rsa
 
 CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
