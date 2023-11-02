@@ -3,10 +3,9 @@
   hosts: all
   become: yes
 
-  tasks:
-  - name: change datetime
-    timezone:
-      name: Asia/Omsk
+- name: change datetime
+  timezone:
+    name: Asia/Omsk
   
 - name: ssh users and host keys
   hosts: all
