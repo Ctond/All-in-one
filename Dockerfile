@@ -9,7 +9,7 @@ RUN apt install -y \
 RUN apt clean && apt autoremove
 
 RUN mkdir -p ~/.ssh && ssh-keyscan 10.10.152.112 >> ~/.ssh/known_hosts
-RUN moutn=type=ssh target /root/.ssh/known_hosts
+RUN --mount=type=ssh target /root/.ssh/known_hosts
 # COPY /id_rsa /root/.ssh/id_rsa
 
 CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
