@@ -27,7 +27,6 @@
     - user1
 
   - name: install docker and docker-compose
-    change: true
     apt:
       update_cache: yes
       upgrade: dist
