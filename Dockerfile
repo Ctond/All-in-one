@@ -9,6 +9,4 @@ RUN apt install -y \
     sshpass
 RUN apt clean && apt autoremove
 
-RUN mkdir -p ~/.ssh && ssh-keyscan 10.10.152.112 >> ~/.ssh/known_hosts
-
 CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
