@@ -28,9 +28,12 @@
       - {{ name: "user1" }}
 
   - name: install docker and docker-compose
-    shell: 
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    - sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    # shell: 
+    # - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    # - sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    apt_repo:
+      repo: https://download.docker.com/linux/ubuntu
+      state: present
     apt:
       update_cache: yes
       upgrade: dist
