@@ -4,28 +4,36 @@
   become: yes
   
   tasks:
-  - name: timezone
-    timezone:
-      name: Asia/Omsk
-    shell: service cron restart
+  - name: Changing time
+    file: # т.к. у таймзоны конфликт с модулем крона, делаю симлинк
+      src: /usr/share/zoneinfo/Asia/Omsk
+      dest: /etc/localtime
+      owner: root
+      group: root
+  # - name: timezone У таймзоны конфликт с кроном
+  #   timezone:
+  #     name: Asia/Omsk
+    # shell: service cron restart
+    cron:
+      state: rebooted
   
   - name: adding users
     user:
       name: "{{ item.name }}"
-      password: "{item.pass}"
+      password: "{{ item.pass }}"
       group: sudo
       home: /bin/bash
       loop:
-        - {{ name: "user", pass: "123 | b64encode" }}
-        - {{ name: "user1", pass: "456 | b64encode" }}
+        - { name: "user", pass: "123 | b64encode" }
+        - { name: "user1", pass: "456 | b64encode" }
 
   - name: key
     copy:
       src: "/home/test/.ssh/id_rsa.pub"
       dst: "/home/{item.name}/.ssh/"
-    loop:
-      - {{ name: "user" }}
-      - {{ name: "user1" }}
+      loop:
+        - { name: user }
+        - { name: user1 }
 
   - name: install docker and docker-compose
     # shell: 
@@ -38,7 +46,6 @@
       update_cache: yes
       upgrade: dist
       pkg: 
-        - docker
         - docker-compose
         - docker-ce
       state: present
