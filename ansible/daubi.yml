@@ -5,11 +5,13 @@
   
   tasks:
   - name: Changing time
-    file:
-      src: /usr/share/zoneinfo/Asia/Omsk
-      dest: /etc/localtime
-      owner: root
-      group: root
+    timezone:
+      name: Asia/Omsk
+    # file: #Смена таймзоны по симлинку
+    #   src: /usr/share/zoneinfo/Asia/Omsk
+    #   dest: /etc/localtime
+    #   owner: root
+    #   group: root
 
   - name: reboot cron
     service:
@@ -22,17 +24,17 @@
       password: "{{ item.pass }}"
       group: sudo
       home: /bin/bash
-      loop:
-        - { name: "user", pass: "123 | b64encode" }
-        - { name: "user1", pass: "456 | b64encode" }
+    loop:
+      - { name: "user",  pass: "123 | b64encode" }
+      - { name: "user1", pass: "456 | b64encode" }
 
   - name: copying our key in new user
     copy:
       src: "/home/test/.ssh/id_rsa.pub"
-      dst: "/home/{item.name}/.ssh/"
-      loop:
-        - { name: user }
-        - { name: user1 }
+      dst: /home/"{{ item.path }}"/.ssh/id_rsa.rub 
+    loop:
+      - "{{ user }}"
+      - "{{ user1 }}"
 
   # - name: added repository #Здесь добавление репы через shell
   #   shell:
