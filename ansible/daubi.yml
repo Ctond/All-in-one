@@ -12,8 +12,9 @@
       group: root
 
   - name: reboot cron
-    cron:
-      state: rebooted
+    service:
+      name: cron
+      state: restarted
   
   - name: creating users on target
     user:
