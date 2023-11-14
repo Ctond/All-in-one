@@ -23,18 +23,20 @@
       name: "{{ item.name }}"
       password: "{{ item.pass }}"
       group: sudo
-      home: /bin/bash
+      home: /home/"{{ item.name }}"
     loop:
-      - { name: "user",  pass: "123 | b64encode" }
-      - { name: "user1", pass: "456 | b64encode" }
+      - name: user
+        pass: "{{ '123' | password_hash('sha512') }}"
+      - name: user1
+        pass: "{{ '456' | password_hash('sha512') }}"
 
   - name: copying our key in new user
     copy:
       src: "/home/test/.ssh/id_rsa.pub"
-      dst: /home/"{{ item.path }}"/.ssh/id_rsa.rub 
+      dest: /home/"{{item}}"/.ssh/id_rsa.rub 
     loop:
-      - "{{ user }}"
-      - "{{ user1 }}"
+      - user
+      - user1
 
   # - name: added repository #Здесь добавление репы через shell
   #   shell:
