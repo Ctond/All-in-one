@@ -7,12 +7,14 @@
   - name: timezone
     timezone:
       name: Asia/Omsk
-    shell: service cron restart
+    # shell: service cron restart
+    cron:
+      state: rebooted
   
   - name: adding users
     user:
       name: "{{ item.name }}"
-      password: "{item.pass}"
+      password: "{{ item.pass }}"
       group: sudo
       home: /bin/bash
       loop:
@@ -38,7 +40,6 @@
       update_cache: yes
       upgrade: dist
       pkg: 
-        - docker
         - docker-compose
         - docker-ce
       state: present
