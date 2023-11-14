@@ -15,7 +15,7 @@
     cron:
       state: rebooted
   
-  - name: adding users
+  - name: creating users on target
     user:
       name: "{{ item.name }}"
       password: "{{ item.pass }}"
@@ -25,7 +25,7 @@
         - { name: "user", pass: "123 | b64encode" }
         - { name: "user1", pass: "456 | b64encode" }
 
-  - name: key
+  - name: copying our key in new user
     copy:
       src: "/home/test/.ssh/id_rsa.pub"
       dst: "/home/{item.name}/.ssh/"
@@ -33,15 +33,17 @@
         - { name: user }
         - { name: user1 }
 
-  - name: added repository
-    shell:
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-      sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+  # - name: added repository #Здесь добавление репы через shell
+  #   shell:
+  #     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  #     sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 
-  - name: installing packages
+  - name: added repository
     apt_repo:
       repo: https://download.docker.com/linux/ubuntu
       state: present
+  
+  - name: install packages
     apt:
       update_cache: yes
       upgrade: dist
