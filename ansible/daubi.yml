@@ -46,7 +46,7 @@
   #     sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 
   - name: added repository
-    apt_repo:
+    apt_repository:
       repo: https://download.docker.com/linux/ubuntu
       state: present
   
