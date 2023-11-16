@@ -45,21 +45,56 @@
   #     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   #     sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 
-  - name: added repository
-    apt_repository:
-      repo: https://download.docker.com/linux/ubuntu
-      state: present
+  # - name: added repository # Через добавление репозитория модуль apt не видит пакетов
+  #   apt_repository:
+  #     repo: deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu stable
+  #     state: present
   
-  - name: upgrade repository
-    apt:
-      upgrade: dist
+  # - name: upgrade repository
+  #   apt:
+  #     upgrade: dist
 
-  - name: install packages
+  # - name: install packages
+  #   apt:
+  #     name: "{{ item }}"
+  #     state: latest
+  #     update_cache: yes
+  #   loop:
+  #     - docker-ce
+  #     - docker-ce-cli
+  #     - containerd.io
+
+  - name: uninstall old docker packages
+    ignore_errors: true
     apt:
       name: "{{ item }}"
-      state: latest
+      state: absent
       update_cache: yes
     loop:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+      - docker
+      - docker-compose
+      - docker-compose-v2
+      - docker.io
+      - docker-doc
+      - podman-docker
+
+  - name: install docker-ce
+    shell:
+      cmd: |
+        cd /tmp
+        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/containerd.io_1.6.9-1_amd64.deb
+        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-buildx-plugin_0.11.2-1~ubuntu.22.04~jammy_amd64.deb
+        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce-cli_24.0.7-1~ubuntu.22.04~jammy_amd64.deb
+        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce_24.0.7-1~ubuntu.22.04~jammy_amd64.deb
+        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-compose-plugin_2.6.0~ubuntu-jammy_amd64.deb
+        dpkg -i /tmp/containerd.io_1.6.9-1_arm64.deb
+        dpkg -i /tmp/docker-buildx-plugin_0.11.2-1~ubuntu.22.04~jammy_arm64.deb
+        dpkg -i /tmp/docker-ce-cli_24.0.7-1~ubuntu.22.04~jammy_arm64.deb
+        dpkg -i /tmp/docker-ce_24.0.7-1~ubuntu.22.04~jammy_arm64.deb
+        dpkg -i /tmp/docker-compose-plugin_2.6.0~ubuntu-jammy_arm64.deb
+      # Порядок установки:
+      # containerd.io
+      # docker-buildx-plugin
+      # docker-ce-cli
+      # docker-ce
+      # docker-compose-plugin
