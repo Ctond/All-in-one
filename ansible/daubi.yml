@@ -4,97 +4,75 @@
   become: yes
   
   tasks:
-  - name: Changing time
-    timezone:
-      name: Asia/Omsk
-    # file: #Смена таймзоны по симлинку
-    #   src: /usr/share/zoneinfo/Asia/Omsk
-    #   dest: /etc/localtime
-    #   owner: root
-    #   group: root
+    - name: Changing time
+      timezone:
+        name: Asia/Omsk
 
-  - name: reboot cron
-    service:
-      name: cron
-      state: restarted
-  
-  - name: creating users on target
-    ansible.builtin.user:
-      # name: user
-      # password: "{{ '123' | password_hash('md5') }}"
-      name: "{{ item.name }}"
-      password: "{{ item.pass }}"
-      group: sudo
-    loop:
-      - name: user
-        pass: "{{ '123' | password_hash('md5') }}"
-      - name: user1
-        pass: "{{ '456' | password_hash('md5') }}"
+    - name: reboot cron
+      service:
+        name: cron
+        state: restarted
+    
+    - name: creating users on target
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "{{ item.pass }}"
+        group: sudo
+      loop:
+        - name: user
+          pass: "{{ '123' | password_hash('md5') }}"
+        - name: user1
+          pass: "{{ '456' | password_hash('md5') }}"
 
-  - name: copying our key in new user
-    ansible.posix.authorized_key:
-      user: "{{ item }}"
-      state: present
-      key: "{{ lookup('file', '/home/test/.ssh/id_rsa.pub') }}"
-    loop:
-      - user
-      - user1
+    - name: copying our key in new user
+      ansible.posix.authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ lookup('file', '/home/test/.ssh/id_rsa.pub') }}"
+      loop:
+        - user
+        - user1
 
-  # - name: added repository #Здесь добавление репы через shell
-  #   shell:
-  #     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  #     sudo add-apt-repository -u "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    - name: uninstall old docker packages
+      apt:
+        pkg:
+        - docker
+        - docker-compose
+        - docker-compose-v2
+        - docker.io
+        - docker-doc
+        - podman-docker
+        state: absent
 
-  # - name: added repository # Через добавление репозитория модуль apt не видит пакетов
-  #   apt_repository:
-  #     repo: deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu stable
-  #     state: present
-  
-  # - name: upgrade repository
-  #   apt:
-  #     upgrade: dist
+    - name: update & upgrade
+      apt:
+        upgrade: yes
+        update_cache: yes
 
-  # - name: install packages
-  #   apt:
-  #     name: "{{ item }}"
-  #     state: latest
-  #     update_cache: yes
-  #   loop:
-  #     - docker-ce
-  #     - docker-ce-cli
-  #     - containerd.io
+    - name: install required packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
 
-  - name: uninstall old docker packages
-    ignore_errors: true
-    apt:
-      name: "{{ item }}"
-      state: absent
-      update_cache: yes
-    loop:
-      - docker
-      - docker-compose
-      - docker-compose-v2
-      - docker.io
-      - docker-doc
-      - podman-docker
+    - name: gpg key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
 
-  - name: install docker-ce
-    shell:
-      cmd: |
-        cd /tmp
-        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/containerd.io_1.6.9-1_amd64.deb
-        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-buildx-plugin_0.11.2-1~ubuntu.22.04~jammy_amd64.deb
-        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce-cli_24.0.7-1~ubuntu.22.04~jammy_amd64.deb
-        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-ce_24.0.7-1~ubuntu.22.04~jammy_amd64.deb
-        wget https://download.docker.com/linux/ubuntu/dists/jammy/pool/stable/amd64/docker-compose-plugin_2.6.0~ubuntu-jammy_amd64.deb
-        dpkg -i /tmp/containerd.io_1.6.9-1_arm64.deb
-        dpkg -i /tmp/docker-buildx-plugin_0.11.2-1~ubuntu.22.04~jammy_arm64.deb
-        dpkg -i /tmp/docker-ce-cli_24.0.7-1~ubuntu.22.04~jammy_arm64.deb
-        dpkg -i /tmp/docker-ce_24.0.7-1~ubuntu.22.04~jammy_arm64.deb
-        dpkg -i /tmp/docker-compose-plugin_2.6.0~ubuntu-jammy_arm64.deb
-      # Порядок установки:
-      # containerd.io
-      # docker-buildx-plugin
-      # docker-ce-cli
-      # docker-ce
-      # docker-compose-plugin
+    - name: add repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: install packages
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
