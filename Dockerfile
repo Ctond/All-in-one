@@ -8,5 +8,6 @@ RUN apt install -y \
     openssh-server openssh-client \
     sshpass
 RUN apt clean && apt autoremove
+ENV NAME_PLAYBOOK=daubi.yml 
 
-CMD ["ansible-playbook", "/etc/ansible/daubi.yml", "/bin/sh"]
+CMD ["ansible-playbook", "/etc/ansible/$NAME_PLAYBOOK", "/bin/sh"]
